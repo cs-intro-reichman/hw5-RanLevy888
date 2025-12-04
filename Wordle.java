@@ -2,27 +2,53 @@ public class Wordle {
 
     // Reads all words from dictionary filename into a String array.
     public static String[] readDictionary(String filename) {
-		// ...
+		In in = new In(filename);
+        String[] dict = in.readAllLines();
+        return dict;
     }
 
     // Choose a random secret word from the dictionary. 
     // Hint: Pick a random index between 0 and dict.length (not including) using Math.random()
     public static String chooseSecretWord(String[] dict) {
-		// ...
+	  int choose = (int)Math.random() * dict.length-1;
+      return dict[choose];
     }
 
     // Simple helper: check if letter c appears anywhere in secret (true), otherwise
     // return false.
     public static boolean containsChar(String secret, char c) {
-		// ...
+        
+	         for(int i = 0 ; i<5; i++){
+                if (c == secret.charAt(i)) 
+            return true;
+             }
+             return false;
     }
 
     // Compute feedback for a single guess into resultRow.
     // G for exact match, Y if letter appears anywhere else, _ otherwise.
     public static void computeFeedback(String secret, String guess, char[] resultRow) {
-		// ...
-		// you may want to use containsChar in your implementation
-    }
+        int i;
+        
+		for( i =0 ; i<5 ; i++)
+        {
+            if(secret.charAt(i)==guess.charAt(i)){
+             resultRow[i]='G';
+            }
+            else{
+                for (int j = 0 ; j<5 ; j++){
+                if(guess.charAt(i)==secret.charAt(j)){
+                    resultRow[i]='Y';
+                }
+                }
+                if(resultRow[i]!='G' && resultRow[i]!='Y')
+                    resultRow[i]='_';
+                
+            }
+            }
+        }
+        
+    
 
     // Store guess string (chars) into the given row of guesses 2D array.
     // For example, of guess is HELLO, and row is 2, then after this function 
@@ -33,7 +59,9 @@ public class Wordle {
 	// guesses[2][3] // 'L'
 	// guesses[2][4] // 'O'
     public static void storeGuess(String guess, char[][] guesses, int row) {
-		// ...
+		for(int i = 0 ; i<5 ; i++){
+            guesses[row][i]=guess.charAt(i);
+        }
     }
 
     // Prints the game board up to currentRow (inclusive).
@@ -55,7 +83,13 @@ public class Wordle {
 
     // Returns true if all entries in resultRow are 'G'.
     public static boolean isAllGreen(char[] resultRow) {
-		// ...
+		for(int i = 0 ; i<5 ; i++){
+            if(resultRow[i]!='G')
+                return false;
+        }
+        
+            return true;
+        
     }
 
     public static void main(String[] args) {
@@ -70,8 +104,9 @@ public class Wordle {
         String secret = chooseSecretWord(dict);
 
         // Prepare 2D arrays for guesses and results
-        char[][] guesses = // ...
-        char[][] results = // ...
+        char[][] guesses = new char[5][5];
+        char[][] results = new char[5][5];
+        
 
         // Prepare to read from the standart input 
         In inp = new In();
