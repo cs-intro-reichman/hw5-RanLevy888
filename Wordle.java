@@ -10,7 +10,7 @@ public class Wordle {
     // Choose a random secret word from the dictionary. 
     // Hint: Pick a random index between 0 and dict.length (not including) using Math.random()
     public static String chooseSecretWord(String[] dict) {
-	  int choose = (int)Math.random() * dict.length-1;
+	  int choose = (int)Math.random() * dict.length;
       return dict[choose];
     }
 
@@ -94,62 +94,65 @@ public class Wordle {
 
     public static void main(String[] args) {
 
-        int WORD_LENGTH = 5;
-        int MAX_ATTEMPTS = 6;
-        
-        // Read dictionary
-        String[] dict = readDictionary("dictionary.txt");
+    final int WORD_LENGTH = 5;
+    final int MAX_ATTEMPTS = 6;
 
-        // Choose secret word
-        String secret = chooseSecretWord(dict);
+    // Read dictionary
+    String[] dict = readDictionary("dictionary.txt");
 
-        // Prepare 2D arrays for guesses and results
-        char[][] guesses = new char[5][5];
-        char[][] results = new char[5][5];
-        
+    // Choose secret word
+    String secret = chooseSecretWord(dict);
 
-        // Prepare to read from the standart input 
-        In inp = new In();
+    // Prepare 2D arrays for guesses and results
+    char[][] guesses = new char[MAX_ATTEMPTS][WORD_LENGTH];
+    char[][] results = new char[MAX_ATTEMPTS][WORD_LENGTH];
 
-        int attempt = 0;
-        boolean won = false;
+    In inp = new In();
 
-        while (attempt < MAX_ATTEMPTS && !won) {
+    int attempt = 0;
+    boolean won = false;
 
-            String guess = "";
-            boolean valid = false;
+    while (attempt < MAX_ATTEMPTS && !won) {
 
-            // Loop until you read a valid guess
-            while (!valid) {
-                System.out.print("Enter your guess (5-letter word): ");
-                guess = // ... read from the standrad input
-                
-                if (/* ... check if the guess is valid */) {
-                    System.out.println("Invalid word. Please try again.");
-                } else {
-                    valid = true;
-                }
+        String guess = "";
+        boolean valid = false;
+
+        // Read a valid guess
+        while (!valid) {
+            System.out.print("Enter your guess (5-letter word): ");
+            guess = inp.readString().toUpperCase();
+
+            if (guess.length() != WORD_LENGTH) {
+                System.out.println("Invalid word. Please try again.");
+            } else {
+                valid = true;
             }
-
-            // Store guess and compute feedback
-            // ... use storeGuess and computeFeedback
-
-            // Print board
-            printBoard(guesses, results, attempt);
-
-            // Check win
-            if (isAllGreen(results[attempt])) {
-                System.out.println("Congratulations! You guessed the word in " + (attempt + 1) + " attempts.");
-                won = true;
-            }
-
-            attempt++;
         }
 
-        if (!won) {
-            // ... follow the assignment examples for how the printing should look like
+        // Store guess in guesses array
+         storeGuess(guess, guesses, attempt);
+        // Compute feedback
+        computeFeedback(secret, guess, results[attempt]);
+
+        // Print board
+        printBoard(guesses, results, attempt);
+
+        // Check if all green
+        if (isAllGreen(results[attempt])) {
+            System.out.println("Congratulations! You guessed the word in " + (attempt + 1) + " attempts.");
+            won = true;
         }
 
-        inp.close();
+        attempt++;
     }
+
+    // If lost
+    if (!won) {
+        System.out.println("Sorry, you did not guess the word.");
+        System.out.println("The secret word was: " + secret);
+    }
+
+    inp.close();
 }
+    }
+
